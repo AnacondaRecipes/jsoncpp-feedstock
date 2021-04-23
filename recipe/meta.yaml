@@ -10,47 +10,41 @@ source:
   sha256: e34a628a8142643b976c7233ef381457efad79468c67cb1ae0b83a33d7493999
 
 build:
-  number: 0
-  features:
-    - vc{{ vc }}  # [win]
+  number: 2
+  run_exports:
+    - {{ pin_subpackage('jsoncpp', max_pin='x.x.x') }}
 
 requirements:
-  host:
-    - cmake >3.1
-    - pkg-config  # [unix]
-    - msinttypes  # [win and py27]
-
   build:
-    - {{ compiler('cxx') }}
+    - {{ compiler("cxx") }}
+    - cmake
+    - make        # [unix]
+    - pkg-config  # [unix]
+    - python
 
 test:
   commands:
     # Verify headers are present.
-    - test -f "${PREFIX}/include/json/json.h"      # [unix]
-    - if not exist %LIBRARY_INC%\\json\\json.h exit 1  # [win]
+    - test -f "${PREFIX}/include/json/json.h"                       # [unix]
+    - if not exist %PREFIX%\\Library\\include\\json\\json.h exit 1  # [win]
 
     # Verify pkg-config file is present.
     - test -f "${PREFIX}/lib/pkgconfig/jsoncpp.pc"  # [unix]
 
     # Verify libraries are present.
-    - test -f "${PREFIX}/lib/libjsoncpp_static.a"   # [unix]
-    - if not exist %LIBRARY_BIN%\\jsoncpp.dll exit 1  # [win]
-    - if not exist %LIBRARY_LIB%\\jsoncpp.lib exit 1  # [win]
-    - if not exist %LIBRARY_LIB%\\jsoncpp_static.lib exit 1  # [win]
+    - test -f "${PREFIX}/lib/libjsoncpp.a"                                             # [unix]
+    - python -c "import ctypes; ctypes.cdll[r'${PREFIX}/lib/libjsoncpp${SHLIB_EXT}']"  # [unix]
+    - if not exist %PREFIX%\\Library\\lib\\jsoncpp.lib exit 1                          # [win]
 
 about:
   home: https://github.com/open-source-parsers/jsoncpp
   license: Public Domain/MIT
   license_file: LICENSE
   summary: A C++ library for interacting with JSON.
-  description: |
-    JsonCpp is a C++ library that allows manipulating JSON values, including
-    serialization and deserialization to and from strings. It can also preserve
-    existing comment in unserialization/serialization steps, making it a
-    convenient format to store user input files.
 
 extra:
   recipe-maintainers:
     - jakirkham
     - stuarteberg
-    - nehaljwani
+    - marcelotrevisani
+    - matthiasdiener
