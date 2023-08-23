@@ -11,6 +11,7 @@ source:
 
 build:
   number: 2
+  trigger: 1
   run_exports:
     - {{ pin_subpackage('jsoncpp', max_pin='x.x.x') }}
 
