@@ -10,8 +10,7 @@ source:
   sha256: e34a628a8142643b976c7233ef381457efad79468c67cb1ae0b83a33d7493999
 
 build:
-  number: 2
-  trigger: 1
+  number: 3
   run_exports:
     - {{ pin_subpackage('jsoncpp', max_pin='x.x.x') }}
 
@@ -24,6 +23,8 @@ requirements:
     - python
 
 test:
+  requires:
+    - python
   commands:
     # Verify headers are present.
     - test -f "${PREFIX}/include/json/json.h"                       # [unix]
